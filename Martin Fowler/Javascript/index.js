@@ -10,7 +10,7 @@ function statement(invoice, plays) {
                           minimumFractionDigits: 2 }).format;
 
   for (let perf of invoice.performances) {
-    const play = plays[perf.playID];
+    const play = playFor(perf); // 우변을 함수로 추출
     let thisAmount = amountFor(perf, play); // 추출한 함수를 이용
 
     // 포인트를 적립한다.
@@ -28,6 +28,7 @@ function statement(invoice, plays) {
 }
 
 // 값이 바뀌지 않는 변수는 매개변수로 전달
+// 명확한 이름으로 변경
 function amountFor(aPerformance, play) {
   let result = 0; // 변수를 초기화하는 코드
   switch (play.type) {
@@ -48,6 +49,10 @@ function amountFor(aPerformance, play) {
       throw new Error(`알 수 없는 장르: ${play.type}`);
   }
   return result; // 함수 안에서 값이 바뀌는 변수 반환
+}
+
+function playFor(aPerformance) {
+  return plays[aPerformance.playID];
 }
 
 function main() {
