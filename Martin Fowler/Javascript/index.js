@@ -1,5 +1,3 @@
-// import invoices from "./data/invoices.json";
-// import plays from "./data/plays.json";
 const invoices = require("./data/invoices.json");
 const plays = require("./data/plays.json");
 
