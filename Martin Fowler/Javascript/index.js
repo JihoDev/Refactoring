@@ -10,9 +10,7 @@ function statement(invoice, plays) {
                           minimumFractionDigits: 2 }).format;
 
   for (let perf of invoice.performances) {
-    // 인라인된 변수는 제거
-    // const play = playFor(perf); // 우변을 함수로 추출
-    let thisAmount = amountFor(perf, playFor(perf)); // 변수 인라인
+    let thisAmount = amountFor(perf); // 필요 없어진 매개변수 제거
 
     // 포인트를 적립한다.
     volumeCredits += Math.max(perf.audience - 30, 0);
@@ -28,9 +26,8 @@ function statement(invoice, plays) {
   return result;
 }
 
-// 값이 바뀌지 않는 변수는 매개변수로 전달
-// 명확한 이름으로 변경
-function amountFor(aPerformance, play) {
+// 필요 없어진 매개변수 제거
+function amountFor(aPerformance) {
   let result = 0; // 변수를 초기화하는 코드
   switch (playFor(aPerformance).type) { // play를 playFor() 호출로 변경
     case "tragedy": // 비극
