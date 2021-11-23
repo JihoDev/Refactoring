@@ -2,16 +2,12 @@ const invoices = require("./data/invoices.json");
 const plays = require("./data/plays.json");
 
 function statement(invoice, plays) {
-  let totalAmount = 0;
   let result = `청구 내역 (고객명: ${invoice.customer})\n`;
-
   for (let perf of invoice.performances) {
-    // 청구 내역을 출력한다.
     result += `  ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} 석)\n`; // 변수 인라인
-    totalAmount += amountFor(perf);
   }
 
-  result += `총액: ${usd(totalAmount)}\n`;
+  result += `총액: ${usd(totalAmount(invoice))}\n`;
   result += `적립 포인트: ${totalVolumeCredits(invoice)} 점\n`; // 값 계산 로직을 함수로 추출 & 변수 인라인
   return result;
 }
@@ -58,11 +54,19 @@ function usd(aNumber) {
 }
 
 function totalVolumeCredits(invoice) {
-  let volumeCredits = 0;
+  let result = 0;
   for (let perf of invoice.performances) {
-    volumeCredits += volumeCreditsFor(perf);
+    result += volumeCreditsFor(perf);
   }
-  return volumeCredits;
+  return result;
+}
+
+function totalAmount(invoice) {
+  let result = 0;
+  for (let perf of invoice.performances) {
+    result += amountFor(perf);
+  }
+  return result;
 }
 
 function main() {
