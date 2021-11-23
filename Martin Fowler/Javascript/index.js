@@ -11,13 +11,8 @@ function statement(invoice, plays) {
     totalAmount += amountFor(perf);
   }
 
-  let volumeCredits = 0; // 변수 선언(초기화)을 반복문 앞으로 이동 - 문장 슬라이드하기
-  for (let perf of invoice.performances) { // 값 누적 로직을 별도 for문으로 분리 - 반복문 쪼개기
-    volumeCredits += volumeCreditsFor(perf);
-  }
-
   result += `총액: ${usd(totalAmount)}\n`;
-  result += `적립 포인트: ${volumeCredits} 점\n`;
+  result += `적립 포인트: ${totalVolumeCredits(invoice)} 점\n`; // 값 계산 로직을 함수로 추출 & 변수 인라인
   return result;
 }
 
@@ -60,6 +55,14 @@ function usd(aNumber) {
   return new Intl.NumberFormat("en-US",
                       { style: "currency", currency: "USD",
                         minimumFractionDigits: 2 }).format(aNumber/100);
+}
+
+function totalVolumeCredits(invoice) {
+  let volumeCredits = 0;
+  for (let perf of invoice.performances) {
+    volumeCredits += volumeCreditsFor(perf);
+  }
+  return volumeCredits;
 }
 
 function main() {
