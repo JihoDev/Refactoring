@@ -1,13 +1,6 @@
-"use-strict";
+"use strict";
 
-const invoices = require("./data/invoices.json");
-const plays = require("./data/plays.json");
-
-function statement(invoice, plays) {
-  return renderPlainText(createStatementData(invoice, plays));
-}
-
-function createStatementData(invoice, plays) {
+export default function createStatementData(invoice, plays) {
 
   const statementData = {};
 
@@ -49,7 +42,7 @@ function createStatementData(invoice, plays) {
       default:
         throw new Error(`알 수 없는 장르: ${aPerformance.play.type}`);
     }
-    return result; // 함수 안에서 값이 바뀌는 변수 반환
+    return result;
   }
 
   function volumeCreditsFor(aPerformance) {
@@ -71,33 +64,5 @@ function createStatementData(invoice, plays) {
         .performances
         .reduce((total, p) => total + p.volumeCredits, 0);
   }
-}
-
-function renderPlainText(data) {
-
-  let result = `청구 내역 (고객명: ${data.customer})\n`;
-  for (let perf of data.performances) {
-    result += ` - ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} 석)\n`; // 변수 인라인
-  }
-
-  result += `총액: ${usd(data.totalAmount)}\n`;
-  result += `적립 포인트: ${data.totalVolumeCredits} 점\n`; // 값 계산 로직을 함수로 추출 & 변수 인라인
-  return result;
-
-  function usd(aNumber) {
-    return new Intl.NumberFormat("en-US",
-                        { style: "currency", currency: "USD",
-                          minimumFractionDigits: 2 }).format(aNumber/100);
-  }
 
 }
-
-function main() {
-  try {
-    console.log(statement(invoices[0], plays));
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-main();
