@@ -21,7 +21,7 @@ function statement(invoice, plays) {
 function renderPlainText(data, plays) {
   let result = `청구 내역 (고객명: ${data.customer})\n`;
   for (let perf of data.performances) {
-    result += `  ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} 석)\n`; // 변수 인라인
+    result += `  ${perf.play.name}: ${usd(amountFor(perf))} (${perf.audience} 석)\n`; // 변수 인라인
   }
 
   result += `총액: ${usd(totalAmount())}\n`;
@@ -29,8 +29,8 @@ function renderPlainText(data, plays) {
   return result;
 
   function amountFor(aPerformance) {
-    let result = 0; // 변수를 초기화하는 코드
-    switch (playFor(aPerformance).type) { // play를 playFor() 호출로 변경
+    let result = 0;
+    switch (aPerformance.play.type) {
       case "tragedy": // 비극
         result = 40000;
         if (aPerformance.audience > 30) {
@@ -45,19 +45,15 @@ function renderPlainText(data, plays) {
         result += 300 * aPerformance.audience;
         break;
       default:
-        throw new Error(`알 수 없는 장르: ${playFor(aPerformance).type}`); // play를 playFor() 호출로 변경
+        throw new Error(`알 수 없는 장르: ${aPerformance.play.type}`);
     }
     return result; // 함수 안에서 값이 바뀌는 변수 반환
-  }
-
-  function playFor(aPerformance) {
-    return plays[aPerformance.playID];
   }
 
   function volumeCreditsFor(perf) {
     let result = 0;
     result += Math.max(perf.audience - 30, 0);
-    if ("comedy" === playFor(perf).type)
+    if ("comedy" === perf.play.type)
       result += Math.floor(perf.audience / 5);
     return result;
   }
